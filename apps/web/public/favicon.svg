@@ -1,0 +1,10 @@
+<!-- keymember mark: a key whose bit is a lowercase k. Lines darken or lighten with the colour scheme. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <style>g { stroke: #1f2333 } @media (prefers-color-scheme: dark) { g { stroke: #e8eaf2 } }</style>
+  <g transform="translate(2.25 0.5)">
+    <circle cx="9" cy="5.25" r="3.25"/>
+    <path d="M9 8.5V21"/>
+    <path d="M9 18L13.25 14.5"/>
+    <path d="M10.9 16.45L13.75 21"/>
+  </g>
+</svg>
