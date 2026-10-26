@@ -1,0 +1,40 @@
+{
+  "name": "keymember",
+  "license": "Apache-2.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.34.7",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build": "tsc -b && pnpm --filter @keymember/web build && pnpm --filter @keymember/extension build",
+    "typecheck": "tsc -b && tsc -p packages/core/test && tsc -p packages/client/test && tsc -p apps/server/test && tsc -p apps/cli/test && tsc -p apps/web && tsc -p apps/extension && tsc -p apps/desktop && tsc -p test",
+    "lint": "node --max-old-space-size=8192 node_modules/eslint/bin/eslint.js . --max-warnings 0",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:firestore": "KEYMEMBER_TEST_STORE=firestore FIRESTORE_EMULATOR_HOST=127.0.0.1:8085 vitest run apps/server/test",
+    "firestore:emulator": "firebase emulators:start --only firestore --project demo-keymember",
+    "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm test",
+    "test:e2e": "node apps/desktop/node_modules/electron/install.js && pnpm --filter @keymember/web build && pnpm --filter @keymember/extension build && pnpm --filter @keymember/desktop build && vitest run --config vitest.e2e.config.ts",
+    "lint:firefox": "web-ext lint --source-dir apps/extension/dist-firefox",
+    "desktop:install": "pnpm --filter @keymember/desktop app:install"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@noble/hashes": "2.4.0",
+    "@types/node": "25.9.9",
+    "eslint": "10.12.0",
+    "eslint-plugin-import-x": "4.17.1",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "fast-check": "4.10.2",
+    "firebase-tools": "15.33.0",
+    "globals": "17.13.0",
+    "prettier": "3.9.9",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.71.1",
+    "vitest": "5.0.3",
+    "web-ext": "10.8.0"
+  }
+}

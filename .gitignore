@@ -1,0 +1,17 @@
+.env
+.env.*
+!.env.example
+node_modules/
+dist/
+dist-firefox/
+.DS_Store
+*.tsbuildinfo
+.data/
+apps/desktop/release/
+
+# Firebase emulator logs
+*-debug.log
+
+# Local data and backups
+.data/
+backups/

@@ -1,0 +1,17 @@
+packages:
+  - packages/*
+  - apps/*
+onlyBuiltDependencies: []
+# pnpm downloads and uses this Node for every script, so a fresh Mac needs only git and pnpm
+useNodeVersion: 24.22.0
+ignoredBuiltDependencies:
+  # The desktop app is optional; its scripts fetch Electron's binary when needed, so a plain
+  # install stays light
+  - electron
+  # Windows installer tooling pulled in by electron-builder; not used
+  - electron-winstaller
+# Security fixes for packages only the Firestore emulator (firebase-tools) pulls in
+overrides:
+  basic-ftp: 6.2.3
+  uuid@<11.1.1: 11.1.1
+  "@opentelemetry/core": 2.8.0
