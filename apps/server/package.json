@@ -1,0 +1,34 @@
+{
+  "name": "@keymember/server",
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -b",
+    "start": "node dist/main.js"
+  },
+  "dependencies": {
+    "@electric-sql/pglite": "0.5.8",
+    "@fastify/static": "10.1.5",
+    "@google-cloud/firestore": "9.3.1",
+    "@keymember/core": "workspace:*",
+    "@noble/hashes": "2.4.0",
+    "fastify": "5.12.6",
+    "pg": "8.23.1",
+    "zod": "4.6.6"
+  },
+  "devDependencies": {
+    "@keymember/client": "workspace:*",
+    "@types/pg": "8.23.1"
+  }
+}
