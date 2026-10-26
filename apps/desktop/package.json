@@ -1,0 +1,29 @@
+{
+  "name": "@keymember/desktop",
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/main.cjs",
+  "scripts": {
+    "build": "node build.mjs",
+    "start": "node node_modules/electron/install.js && node build.mjs && electron .",
+    "app:install": "node scripts/install-app.mjs",
+    "app:smoke": "node scripts/smoke-packaged.mjs"
+  },
+  "devDependencies": {
+    "@keymember/client": "workspace:*",
+    "@keymember/core": "workspace:*",
+    "@keymember/server": "workspace:*",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "electron": "44.9.3",
+    "electron-builder": "26.17.0",
+    "esbuild": "0.28.2",
+    "playwright": "1.64.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "zod": "4.6.6"
+  },
+  "productName": "keymember"
+}

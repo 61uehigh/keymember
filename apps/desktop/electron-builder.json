@@ -1,0 +1,29 @@
+{
+  "$schema": "../../node_modules/.pnpm/node_modules/app-builder-lib/scheme.json",
+  "appId": "io.github.61uehigh.keymember",
+  "productName": "keymember",
+  "directories": { "output": "release" },
+  "files": ["dist/**/*", "package.json"],
+  "asar": true,
+  "npmRebuild": false,
+  "mac": {
+    "category": "public.app-category.productivity",
+    "icon": "build/icon.icns",
+    "target": ["dir"],
+    "identity": "-",
+    "hardenedRuntime": false,
+    "extendInfo": {
+      "NSHumanReadableCopyright": "keymember contributors"
+    }
+  },
+  "electronFuses": {
+    "runAsNode": false,
+    "enableCookieEncryption": true,
+    "enableNodeOptionsEnvironmentVariable": false,
+    "enableNodeCliInspectArguments": false,
+    "enableEmbeddedAsarIntegrityValidation": true,
+    "onlyLoadAppFromAsar": true,
+    "loadBrowserProcessSpecificV8Snapshot": false,
+    "grantFileProtocolExtraPrivileges": false
+  }
+}
