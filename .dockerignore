@@ -1,0 +1,13 @@
+.git
+**/node_modules
+**/dist
+**/dist-*
+**/*.tsbuildinfo
+*.log
+**/.env
+**/.env.*
+!**/.env.example
+apps/desktop/release
+.data
+backups
+deploy/.env

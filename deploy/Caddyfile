@@ -1,0 +1,7 @@
+# HTTPS for keymember. Security headers (HSTS, CSP and the rest) come from the server itself,
+# so none are added here; adding them twice could conflict.
+{$KEYMEMBER_DOMAIN} {
+	encode zstd gzip
+	log
+	reverse_proxy keymember:8080
+}
