@@ -1,0 +1,98 @@
+:root {
+  color-scheme: light dark;
+  --bg: #ffffff;
+  --text: #1c1b19;
+  --text-2: #5f5c56;
+  --hover: #f0efec;
+  --accent: #2f5bea;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1c1c1a;
+    --text: #ecebe7;
+    --text-2: #a5a29b;
+    --hover: #2a2a27;
+    --accent: #7c9cff;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font:
+    14px/1.4 "Pretendard",
+    "Apple SD Gothic Neo",
+    system-ui,
+    sans-serif;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+header {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--hover);
+  color: var(--text-2);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+ul {
+  flex: 1;
+  margin: 0;
+  padding: 4px;
+  overflow-y: auto;
+  list-style: none;
+}
+
+button.row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  min-height: 44px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+button.row:focus-visible,
+button.row:hover {
+  background: var(--hover);
+  outline: none;
+}
+
+button.row:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.title {
+  font-weight: 600;
+}
+
+.sub {
+  color: var(--text-2);
+  font-size: 12px;
+}
+
+.message {
+  padding: 16px 12px;
+  color: var(--text-2);
+}

@@ -1,0 +1,28 @@
+{
+  "name": "@keymember/extension",
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "dependencies": {
+    "@keymember/client": "workspace:*",
+    "@keymember/core": "workspace:*",
+    "@noble/hashes": "2.4.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "zod": "4.6.6"
+  },
+  "devDependencies": {
+    "@types/chrome": "0.3.4",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "esbuild": "0.28.2",
+    "happy-dom": "21.0.4",
+    "@keymember/server": "workspace:*",
+    "playwright": "1.64.0",
+    "@simplewebauthn/server": "14.0.3"
+  }
+}
