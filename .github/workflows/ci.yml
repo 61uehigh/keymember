@@ -1,0 +1,135 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Read-only token: no job here needs to write to the repository
+permissions:
+  contents: read
+
+# A newer push to the same branch or pull request makes older runs pointless
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    # About 5 minutes normally; a hung step fails the run instead of holding a runner for hours
+    timeout-minutes: 20
+    env:
+      # Type-aware ESLint over every workspace project needs more than the default ~2 GB heap
+      NODE_OPTIONS: --max-old-space-size=6144
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # Known vulnerabilities in what ships fail the build; fix by upgrading the dependency
+      - run: pnpm audit --prod --audit-level moderate
+      - run: pnpm check
+      - run: pnpm --filter @keymember/web build
+      - run: pnpm --filter @keymember/extension build
+      # Mozilla's linter for the Firefox build; real-browser testing is manual (Playwright cannot load Firefox add-ons)
+      - run: pnpm lint:firefox
+
+  e2e:
+    runs-on: ubuntu-latest
+    # About 2 minutes normally, plus however long the Ubuntu mirror takes for Playwright's packages
+    timeout-minutes: 25
+    env:
+      NODE_OPTIONS: --max-old-space-size=6144
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec tsc -b
+      - run: pnpm --filter @keymember/extension exec playwright install --with-deps chromium
+      # pnpm does not run Electron's install script; fetch its binary explicitly
+      - run: node apps/desktop/node_modules/electron/install.js
+      # Electron needs a display even in tests
+      - run: xvfb-run -a pnpm test:e2e
+
+  firestore:
+    # The server's tests again, on the Firestore emulator instead of PGlite
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: 24
+          cache: pnpm
+      # The emulator is a Java program
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ~/.cache/firebase/emulators
+          key: firebase-emulators-${{ hashFiles('pnpm-lock.yaml') }}
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec tsc -b
+      - run: pnpm exec firebase emulators:exec --only firestore --project demo-keymember "pnpm test:firestore"
+
+  docker:
+    # The deployment image both guides use: it builds, serves the API and web app, keeps its data
+    # across restarts on a volume, and shuts down cleanly
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - run: docker build -t keymember .
+      - name: Serve, persist and stop cleanly
+        run: |
+          secret="$(openssl rand -base64 32 | tr '+/' '-_' | tr -d '=')"
+          start() {
+            docker run -d --name keymember -p 8080:8080 -v kmdata:/data -e KEYMEMBER_SERVER_SECRET="$secret" keymember
+            for attempt in $(seq 1 30); do curl -sf localhost:8080/api/health && return; sleep 1; done
+            return 1
+          }
+          start
+          curl -sf localhost:8080/ | grep -q '<div id="root">'
+          curl -sf localhost:8080/api/status | grep -q '"bootstrapped":false'
+          # The database files on the volume must survive a stop and a fresh container
+          docker exec keymember sh -c 'test -f /data/PG_VERSION'
+          docker stop -t 20 keymember
+          test "$(docker inspect -f '{{.State.ExitCode}}' keymember)" = 0
+          docker rm keymember
+          start
+          docker exec keymember sh -c 'test -f /data/PG_VERSION'
+          test "$(docker inspect -f '{{.State.Health.Status}}' keymember)" != unhealthy
+          # A crash (power loss, OOM kill) must leave a database that opens again
+          docker kill -s KILL keymember
+          docker rm keymember
+          start
+          curl -sf localhost:8080/api/status | grep -q '"bootstrapped":false'
+      - name: Container logs
+        if: failure()
+        run: docker logs keymember || true
+
+  desktop-package:
+    # Builds keymember.app exactly as `pnpm desktop:install` does on a user's Mac, then launches it
+    runs-on: macos-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm desktop:install
+      - run: pnpm --filter @keymember/desktop app:smoke
