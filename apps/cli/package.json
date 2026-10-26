@@ -1,0 +1,27 @@
+{
+  "name": "@keymember/cli",
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "keymember": "./dist/main.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -b"
+  },
+  "dependencies": {
+    "@keymember/client": "workspace:*",
+    "@keymember/core": "workspace:*",
+    "commander": "15.0.0"
+  },
+  "devDependencies": {
+    "@keymember/server": "workspace:*"
+  }
+}
