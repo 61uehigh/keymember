@@ -1,0 +1,18 @@
+<!-- keymember app icon: the mark in white on a blue tile, the web vault's accent colour -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <defs>
+    <linearGradient id="keymember-tile" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4a78f7"/>
+      <stop offset="1" stop-color="#2142c4"/>
+    </linearGradient>
+  </defs>
+  <rect x="0.5" y="0.5" width="23" height="23" rx="5.5" fill="url(#keymember-tile)"/>
+  <g fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" transform="translate(12 12) scale(0.8) translate(-12 -12)">
+    <g transform="translate(2.25 0.5)">
+    <circle cx="9" cy="5.25" r="3.25"/>
+    <path d="M9 8.5V21"/>
+    <path d="M9 18L13.25 14.5"/>
+    <path d="M10.9 16.45L13.75 21"/>
+  </g>
+  </g>
+</svg>

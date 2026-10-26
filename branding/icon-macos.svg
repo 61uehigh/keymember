@@ -1,0 +1,21 @@
+<!-- keymember macOS icon: the app icon inside the standard macOS margin, with a soft shadow -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="keymember-tile" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4a78f7"/>
+      <stop offset="1" stop-color="#2142c4"/>
+    </linearGradient>
+    <filter id="keymember-shadow" x="-10%" y="-10%" width="120%" height="125%">
+      <feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  <rect x="100" y="100" width="824" height="824" rx="186" fill="url(#keymember-tile)" filter="url(#keymember-shadow)"/>
+  <g fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" transform="translate(512 512) scale(27.5) translate(-12 -12)">
+    <g transform="translate(2.25 0.5)">
+    <circle cx="9" cy="5.25" r="3.25"/>
+    <path d="M9 8.5V21"/>
+    <path d="M9 18L13.25 14.5"/>
+    <path d="M10.9 16.45L13.75 21"/>
+  </g>
+  </g>
+</svg>
